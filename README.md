@@ -2,6 +2,10 @@
 
 # Linux driver and daemon for Thermaltake Riing
 
+**UNRAID-compatible fork by [Alyxiana](https://github.com/Alyxiana)**
+
+Original work by [Max Chesterfield](https://github.com/chestm007)
+
 
 ## Compatibility
 Python3 only.

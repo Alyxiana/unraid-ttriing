@@ -12,7 +12,7 @@ setup(
     name='linux_thermaltake_rgb',
     version=version,
     packages=find_packages(),
-    url='https://github.com/chestm007/linux_thermaltake_rgb',
+    url='https://github.com/Alyxiana/unraid-ttriing',
     license='GPL-2.0',
     author='Max Chesterfield',
     author_email='chestm007@hotmail.com',
