@@ -42,25 +42,25 @@ Supported devices:
 
 <FILE Name="99-thermaltake-usb.rules">
 <URL>https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel/unraid/99-thermaltake-usb.rules</URL>
-<MD5>PLACEHOLDER_MD5</MD5>
+<MD5>36897B20F45D416BF415605AC0B1471A</MD5>
 <INSTALL>/usr/bin/install -D -m 644 99-thermaltake-usb.rules /etc/udev/rules.d/99-thermaltake-usb.rules</INSTALL>
 </FILE>
 
 <FILE Name="linux-thermaltake-rgb.service">
 <URL>https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel/unraid/linux-thermaltake-rgb.service</URL>
-<MD5>PLACEHOLDER_MD5</MD5>
+<MD5>18935DFCC27E6BCEF62FD816264F65F8</MD5>
 <INSTALL>/usr/bin/install -D -m 644 linux-thermaltake-rgb.service /usr/lib/systemd/system/linux-thermaltake-rgb.service</INSTALL>
 </FILE>
 
 <FILE Name="dashboard.inc">
 <URL>https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel/unraid/dashboard.inc</URL>
-<MD5>PLACEHOLDER_MD5</MD5>
+<MD5>22048667C436B10B54A7C5EA04991A58</MD5>
 <INSTALL>/usr/bin/install -D -m 644 dashboard.inc /usr/local/emhttp/plugins/&name;/dashboard.inc</INSTALL>
 </FILE>
 
 <FILE Name="config.yml">
 <URL>https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel/linux_thermaltake_rgb/assets/config.yml</URL>
-<MD5>PLACEHOLDER_MD5</MD5>
+<MD5>D34CC7D520B450BACBA952B5BA9682DE</MD5>
 <INSTALL>/usr/bin/install -D -m 644 config.yml /boot/config/plugins/&name;/config/config.yml.example</INSTALL>
 </FILE>
 
