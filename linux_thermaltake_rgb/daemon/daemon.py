@@ -26,6 +26,7 @@ from linux_thermaltake_rgb.lighting_manager import LightingEffect
 from linux_thermaltake_rgb import devices, LOGGER
 from linux_thermaltake_rgb.fan_manager import FanManager
 from linux_thermaltake_rgb.devices import ThermaltakeDevice
+from linux_thermaltake_rgb.daemon.http_server import StatusHTTPServer
 
 
 class ThermaltakeDaemon:
@@ -61,6 +62,9 @@ class ThermaltakeDaemon:
                 self.register_attached_device(controller['unit'], id, dev)
 
         self._continue = False
+        
+        # Initialize HTTP server for status monitoring
+        self.http_server = StatusHTTPServer(self)
 
     def register_attached_device(self, unit, port, dev=None):
         if self.fan_manager and isinstance(dev, devices.ThermaltakeFanDevice):
@@ -74,6 +78,11 @@ class ThermaltakeDaemon:
 
     def run(self):
         self._continue = True
+        
+        # Start HTTP server first
+        LOGGER.debug('starting HTTP status server')
+        self.http_server.start()
+        
         if self.lighting_manager:
             LOGGER.debug('starting lighting manager')
             self.lighting_manager.start()
@@ -90,6 +99,11 @@ class ThermaltakeDaemon:
         if self.fan_manager:
             LOGGER.debug('stopping fan manager')
             self.fan_manager.stop()
+        
+        # Stop HTTP server
+        LOGGER.debug('stopping HTTP status server')
+        self.http_server.stop()
+        
         LOGGER.debug('saving controller profiles')
         for controller in self.controllers.values():
             controller.save_profile()

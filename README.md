@@ -2,9 +2,19 @@
 
 # Linux driver and daemon for Thermaltake Riing
 
-**UNRAID-compatible fork by [Alyxiana](https://github.com/Alyxiana)**
+**UNRAID-compatible fork with dashboard monitoring by [Alyxiana](https://github.com/Alyxiana)**
 
 Original work by [Max Chesterfield](https://github.com/chestm007)
+
+## Features
+
+- Control Thermaltake RGB fans and lighting systems
+- **NEW: UNRAID dashboard panel for real-time monitoring**
+- Automatic fan speed control based on temperature
+- Multiple lighting effects and modes
+- REST API for status monitoring
+- USB device auto-configuration
+- Persistent configuration storage on UNRAID
 
 
 ## Compatibility
@@ -24,9 +34,19 @@ If your's isn't listed, please create an issue and I'll implement it ASAP!!
 
 ## Installation
 
-### UNRAID
+### UNRAID (Recommended)
 
 See [UNRAID-README.md](UNRAID-README.md) for detailed UNRAID installation instructions.
+
+**Dashboard Features:**
+- Real-time monitoring of connected devices
+- Fan speed display and control status
+- Lighting mode and color information
+- Service start/stop controls
+- Live log viewing
+- Service status at a glance
+
+The dashboard panel is automatically integrated into your UNRAID dashboard after plugin installation.
 
 ### Pypi
 
@@ -187,5 +207,28 @@ g/r/b: RGB values of the desired colour
     - r 
     - g 
     - b 
+  
+
+## REST API
+
+The daemon provides a REST API for monitoring status when running:
+
+### Status Endpoint
+```
+GET http://localhost:5334/status
+```
+
+Returns JSON with:
+- Controller information and connected devices
+- Fan speeds and status
+- Lighting mode and current color
+- Service uptime and status
+
+### Health Check
+```
+GET http://localhost:5334/health
+```
+
+Returns simple health status for monitoring systems. 
   
 

@@ -2,13 +2,13 @@
 
 This guide will help you install the Thermaltake Riing RGB controller software on your UNRAID server.
 
-## What's New in v1.3.0
+## What's New in v1.4.0
 
-- Updated for UNRAID compatibility
-- Removed GObject dependency (no longer required)
-- USB device permissions automatically configured
-- Configuration stored on flash drive for persistence
-- Docker alternative for easier deployment
+- **NEW: UNRAID Dashboard Panel for real-time monitoring**
+- Added REST API for status monitoring
+- Improved device status reporting
+- Enhanced troubleshooting capabilities
+- Removed Docker dependencies for cleaner installation
 
 ## Installation Options
 
@@ -31,6 +31,20 @@ This guide will help you install the Thermaltake Riing RGB controller software o
    - The plugin will automatically start the service
    - Check status: `Settings → Users → Services` or run `systemctl status linux-thermaltake-rgb.service`
 
+## Dashboard Panel Features
+
+After installation, you'll see a new "Thermaltake RGB Controller" panel on your UNRAID dashboard that provides:
+
+- **Real-time Status**: See if the service is running at a glance
+- **Device Information**: View connected Thermaltake devices
+- **Fan Speeds**: Monitor current fan speeds for all connected fans
+- **Lighting Status**: See current lighting mode and colors
+- **Service Controls**: Start/stop the service directly from the dashboard
+- **Live Logs**: View recent service logs without leaving the dashboard
+- **Quick Access**: Easy access to configuration and detailed logs
+
+The dashboard updates automatically and provides a comprehensive view of your RGB controller setup.
+
 ### Option 2: Manual Installation
 
 1. **Download the files:**
@@ -46,22 +60,11 @@ This guide will help you install the Thermaltake Riing RGB controller software o
    ./install.sh
    ```
 
-### Option 3: Docker (Alternative)
-
-1. **Build and run with Docker Compose:**
-   ```bash
-   cd linux_thermaltake_riing
-   mkdir -p config
-   cp linux_thermaltake_rgb/assets/config.yml config/
-   docker-compose up -d
-   ```
-
 ## Configuration
 
 Edit your configuration file at:
 - Plugin: `/boot/config/plugins/linux-thermaltake-rgb/config/config.yml`
 - Manual: `/etc/linux_thermaltake_rgb/config.yml`
-- Docker: `./config/config.yml`
 
 ### Basic Configuration Example
 
