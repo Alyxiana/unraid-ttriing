@@ -42,25 +42,25 @@ Supported devices:
 
 <FILE Name="99-thermaltake-usb.rules">
 <URL>https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel/unraid/99-thermaltake-usb.rules</URL>
-<MD5>E84F44974711A47DA0642E0D0FA0D215</MD5>
+<MD5>e84f44974711a47da0642e0d0fa0d215</MD5>
 <INSTALL>/usr/bin/install -D -m 644 99-thermaltake-usb.rules /etc/udev/rules.d/99-thermaltake-usb.rules</INSTALL>
 </FILE>
 
 <FILE Name="linux-thermaltake-rgb.service">
 <URL>https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel/unraid/linux-thermaltake-rgb.service</URL>
-<MD5>233B34C91E779BBF69C37C95CCB71151</MD5>
+<MD5>233b34c91e779bbf69c37c95ccb71151</MD5>
 <INSTALL>/usr/bin/install -D -m 644 linux-thermaltake-rgb.service /usr/lib/systemd/system/linux-thermaltake-rgb.service</INSTALL>
 </FILE>
 
 <FILE Name="dashboard.inc">
 <URL>https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel/unraid/dashboard.inc</URL>
-<MD5>18547EE369333A9FD8CFCE0A6C4A8E47</MD5>
+<MD5>18547ee369333a9fd8cfce0a6c4a8e47</MD5>
 <INSTALL>/usr/bin/install -D -m 644 dashboard.inc /usr/local/emhttp/plugins/&name;/dashboard.inc</INSTALL>
 </FILE>
 
 <FILE Name="config.yml">
 <URL>https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel/linux_thermaltake_rgb/assets/config.yml</URL>
-<MD5>787EB81C8C2A785201E537F1C6E4BB85</MD5>
+<MD5>787eb81c8c2a785201e537f1c6e4bb85</MD5>
 <INSTALL>/usr/bin/install -D -m 644 config.yml /boot/config/plugins/&name;/config/config.yml.example</INSTALL>
 </FILE>
 
