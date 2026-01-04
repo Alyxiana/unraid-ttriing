@@ -15,8 +15,8 @@
     </CHANGES>
 
     <DEPENDENCIES>
-        <OS version=">=6.9.0"/>
-        <PYTHON version=">=3.6"/>
+        <OS version="&gt;=6.9.0"/>
+        <PYTHON version="&gt;=3.6"/>
     </DEPENDENCIES>
 
     <INSTALL>
@@ -38,7 +38,7 @@
             fi
             
             # Create udev rules directly
-            cat > /etc/udev/rules.d/99-thermaltake-usb.rules << 'EOF'
+            cat &gt; /etc/udev/rules.d/99-thermaltake-usb.rules &lt;&lt; 'EOF'
 # Thermaltake RGB Controller USB Device Access Rules
 # These rules allow the linux-thermaltake-rgb daemon to access USB devices
 
@@ -60,7 +60,7 @@ EOF
             udevadm control --reload-rules
             
             # Create systemd service directly
-            cat > /usr/lib/systemd/system/linux-thermaltake-rgb.service << 'EOF'
+            cat &gt; /usr/lib/systemd/system/linux-thermaltake-rgb.service &lt;&lt; 'EOF'
 [Unit]
 Description=Thermaltake RGB Controller Daemon
 Documentation=https://github.com/chestm007/linux_thermaltake_riing
@@ -107,7 +107,7 @@ EOF
             
             # Install default config if not exists
             if [ ! -f /boot/config/plugins/&name;/config/config.yml ]; then
-                cat > /boot/config/plugins/&name;/config/config.yml << 'EOF'
+                cat &gt; /boot/config/plugins/&name;/config/config.yml &lt;&lt; 'EOF'
 #####################################################################
 #
 #  This default config file outlines most of the configuration
@@ -150,8 +150,8 @@ EOF
             echo "Removing Linux Thermaltake RGB plugin..."
             
             # Stop and disable service
-            systemctl stop linux-thermaltake-rgb.service 2>/dev/null
-            systemctl disable linux-thermaltake-rgb.service 2>/dev/null
+            systemctl stop linux-thermaltake-rgb.service 2&gt;/dev/null
+            systemctl disable linux-thermaltake-rgb.service 2&gt;/dev/null
             
             # Remove systemd service
             rm -f /usr/lib/systemd/system/linux-thermaltake-rgb.service
