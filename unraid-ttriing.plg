@@ -7,7 +7,7 @@
 ]>
 <PLUGIN name="&name;" author="&author;" version="&version;" pluginURL="&pluginURL;" pluginDescription="&pluginDescription;">
     <CHANGES>
-        ###&version;
+        ###1.4.0
         - Updated for UNRAID compatibility
         - Removed GObject dependency
         - Added USB device permissions
@@ -24,9 +24,9 @@
             echo "Installing Linux Thermaltake RGB plugin..."
             
             # Create plugin directories
-            mkdir -p /boot/config/plugins/&name;
-            mkdir -p /boot/config/plugins/&name;/config
-            mkdir -p /usr/local/emhttp/plugins/&name;
+            mkdir -p /boot/config/plugins/unraid-ttriing;
+            mkdir -p /boot/config/plugins/unraid-ttriing/config
+            mkdir -p /usr/local/emhttp/plugins/unraid-ttriing;
             
             # Install Python package
             if [ ! -f /usr/local/sbin/unraid-ttriing ]; then
@@ -34,7 +34,7 @@
                 /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 install pyyaml psutil pyusb numpy
                 
                 echo "Installing unraid-ttriing..."
-                /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 install unraid_ttriing==&version;
+                /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 install unraid_ttriing==1.4.0
             fi
             
             # Create udev rules directly
@@ -111,7 +111,7 @@ EOF
             systemctl daemon-reload
             
             # Install default config if not exists
-            if [ ! -f /boot/config/plugins/&name;/config/config.yml ]; then
+            if [ ! -f /boot/config/plugins/unraid-ttriing/config/config.yml ]; then
                 echo "Installing default configuration..."
                 cat > "${CONFIG_DIR}/config/config.yml" << 'EOF'
 #####################################################################
@@ -213,7 +213,7 @@ EOF
             
             # Create symlink for config
             mkdir -p /etc/unraid_ttriing
-            ln -sf /boot/config/plugins/&name;/config/config.yml /etc/unraid_ttriing/config.yml
+            ln -sf /boot/config/plugins/unraid-ttriing/config/config.yml /etc/unraid_ttriing/config.yml
             
             echo "Installation complete!"
         </RUN>
@@ -241,7 +241,7 @@ EOF
             # Remove config symlink
             rm -f /etc/unraid_ttriing/config.yml
             
-            # Note: We keep the config in /boot/config/plugins/&name; to preserve settings
+            # Note: We keep the config in /boot/config/plugins/unraid-ttriing to preserve settings
             
             echo "Removal complete!"
         </RUN>
