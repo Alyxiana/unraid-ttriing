@@ -23,9 +23,9 @@ from threading import Thread
 
 from psutil import sensors_temperatures
 
-from linux_thermaltake_rgb import LOGGER
-from linux_thermaltake_rgb.classified_object import ClassifiedObject
-from linux_thermaltake_rgb.globals import RGB
+from unraid_ttriing import LOGGER
+from unraid_ttriing.classified_object import ClassifiedObject
+from unraid_ttriing.globals import RGB
 import math
 
 

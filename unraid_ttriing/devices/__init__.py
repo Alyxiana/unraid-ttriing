@@ -19,9 +19,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 from collections import namedtuple
 
-from linux_thermaltake_rgb import LOGGER
-from linux_thermaltake_rgb.classified_object import ClassifiedObject
-from linux_thermaltake_rgb.globals import PROTOCOL_SET, PROTOCOL_LIGHT, PROTOCOL_FAN, PROTOCOL_GET
+from unraid_ttriing import LOGGER
+from unraid_ttriing.classified_object import ClassifiedObject
+from unraid_ttriing.globals import PROTOCOL_SET, PROTOCOL_LIGHT, PROTOCOL_FAN, PROTOCOL_GET
 
 FanSpeed = namedtuple('FanSpeed', ['set_speed', 'rpm'])
 
@@ -76,6 +76,6 @@ class ThermaltakeFanDevice(ThermaltakeDevice):
         return FanSpeed(speed, (rpm_h << 8) + rpm_l)
 
 
-from linux_thermaltake_rgb.devices.pumps import *
-from linux_thermaltake_rgb.devices.fans import *
-from linux_thermaltake_rgb.devices.lights import *
+from unraid_ttriing.devices.pumps import *
+from unraid_ttriing.devices.fans import *
+from unraid_ttriing.devices.lights import *

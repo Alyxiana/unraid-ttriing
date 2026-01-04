@@ -7,16 +7,16 @@ with open('README.md') as f:
 with open('VERSION') as f:
     version = f.read().strip()
 
-DATA_FILE_LOCATION = '/usr/share/linux_thermaltake_rgb'
+DATA_FILE_LOCATION = '/usr/share/unraid_ttriing'
 setup(
-    name='linux_thermaltake_rgb',
+    name='unraid_ttriing',
     version=version,
     packages=find_packages(),
     url='https://github.com/Alyxiana/unraid-ttriing',
     license='GPL-2.0',
-    author='Max Chesterfield',
+    author='Alyxiana',
     author_email='chestm007@hotmail.com',
-    maintainer='Max Chesterfield',
+    maintainer='Alyxiana',
     maintainer_email='chestm007@hotmail.com',
     description='Python driver and daemon for Thermaltake hardware products',
     long_description=readme,
@@ -30,11 +30,11 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'linux-thermaltake-rgb=linux_thermaltake_rgb.daemon.main:main',
+            'unraid-ttriing=unraid_ttriing.daemon.main:main',
         ],
     },
-    data_files=[(DATA_FILE_LOCATION, ['linux_thermaltake_rgb/assets/linux-thermaltake-rgb.service']),
-                (DATA_FILE_LOCATION, ['linux_thermaltake_rgb/assets/config.yml'])],
+    data_files=[(DATA_FILE_LOCATION, ['unraid_ttriing/assets/linux-thermaltake-rgb.service']),
+                (DATA_FILE_LOCATION, ['unraid_ttriing/assets/config.yml'])],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: System Administrators',

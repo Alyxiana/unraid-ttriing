@@ -1,23 +1,23 @@
 #!/bin/bash
 # Test script for Linux Thermaltake RGB on UNRAID
 
-echo "Testing Linux Thermaltake RGB installation..."
+echo "Testing unraid-ttriing installation..."
 echo "=========================================="
 
 # Check if service is running
-if systemctl is-active --quiet linux-thermaltake-rgb.service; then
+if systemctl is-active --quiet unraid-ttriing.service; then
     echo "✓ Service is running"
 else
     echo "✗ Service is not running"
     echo "Trying to start service..."
-    sudo systemctl start linux-thermaltake-rgb.service
+    sudo systemctl start unraid-ttriing.service
     sleep 2
-    if systemctl is-active --quiet linux-thermaltake-rgb.service; then
+    if systemctl is-active --quiet unraid-ttriing.service; then
         echo "✓ Service started successfully"
     else
         echo "✗ Service failed to start"
         echo "Checking logs:"
-        sudo journalctl -u linux-thermaltake-rgb.service --no-pager -n 20
+        sudo journalctl -u unraid-ttriing.service --no-pager -n 20
         exit 1
     fi
 fi
@@ -36,10 +36,12 @@ fi
 # Check configuration
 echo ""
 echo "Checking configuration..."
-if [ -f /etc/linux_thermaltake_rgb/config.yml ]; then
-    echo "✓ Configuration file found at /etc/linux_thermaltake_rgb/config.yml"
-    if [ -L /etc/linux_thermaltake_rgb/config.yml ]; then
-        echo "  → Linked to: $(readlink /etc/linux_thermaltake_rgb/config.yml)"
+if [ -f /boot/config/plugins/unraid-ttriing/config/config.yml ]; then
+    echo "✓ Configuration file found at /boot/config/plugins/unraid-ttriing/config/config.yml"
+elif [ -f /etc/unraid_ttriing/config.yml ]; then
+    echo "✓ Configuration file found at /etc/unraid_ttriing/config.yml"
+    if [ -L /etc/unraid_ttriing/config.yml ]; then
+        echo "  → Linked to: $(readlink /etc/unraid_ttriing/config.yml)"
     fi
 else
     echo "✗ Configuration file not found"
@@ -49,7 +51,7 @@ fi
 # Check Python module
 echo ""
 echo "Checking Python module..."
-if /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python -c "import linux_thermaltake_rgb" 2>/dev/null; then
+if /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python -c "import unraid_ttriing" 2>/dev/null; then
     echo "✓ Python module installed successfully"
 else
     echo "✗ Python module not found"

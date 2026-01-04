@@ -1,14 +1,14 @@
 [Unit]
 Description=Thermaltake RGB Controller Daemon
-Documentation=https://github.com/chestm007/linux_thermaltake_riing
-AssertPathExists=/etc/linux_thermaltake_rgb/config.yml
+Documentation=https://github.com/Alyxiana/unraid-ttriing
+AssertPathExists=/boot/config/plugins/unraid-ttriing/config/config.yml
 After=network.target
 Wants=network.target
 
 [Service]
 Type=simple
-EnvironmentFile=-/etc/default/linux-thermaltake-rgb
-ExecStart=/usr/local/bin/linux-thermaltake-rgb
+EnvironmentFile=-/etc/default/unraid-ttriing
+ExecStart=/usr/local/bin/unraid-ttriing
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 RestartSec=5s

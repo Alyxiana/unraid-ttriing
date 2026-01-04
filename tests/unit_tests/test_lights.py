@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 import unittest
 
-from linux_thermaltake_rgb.lighting_manager import LightingEffect
+from unraid_ttriing.lighting_manager import LightingEffect
 
 
 class LightTest(unittest.TestCase):

@@ -1,6 +1,8 @@
-# Linux Thermaltake RGB - UNRAID Installation Guide
+# unraid-ttriing - UNRAID Installation Guide
 
 This guide will help you install the Thermaltake Riing RGB controller software on your UNRAID server.
+
+**Maintained by [Alyxiana](https://github.com/Alyxiana) - Original work by [Max Chesterfield](https://github.com/chestm007)**
 
 ## What's New in v1.3.0
 
@@ -15,7 +17,7 @@ This guide will help you install the Thermaltake Riing RGB controller software o
 ### Option 1: UNRAID Plugin (Recommended)
 
 1. **Download the plugin file:**
-   - Get `linux-thermaltake-rgb.plg` from the releases page
+   - Get `unraid-ttriing.plg` from the releases page
 
 2. **Install in UNRAID:**
    - Go to UNRAID web UI → Settings → Plugins
@@ -24,20 +26,20 @@ This guide will help you install the Thermaltake Riing RGB controller software o
    - Click "Install"
 
 3. **Configure your devices:**
-   - Edit `/boot/config/plugins/linux-thermaltake-rgb/config/config.yml`
+   - Edit `/boot/config/plugins/unraid-ttriing/config/config.yml`
    - See configuration section below
 
 4. **Start the service:**
    - The plugin will automatically start the service
-   - Check status: `Settings → Users → Services` or run `systemctl status linux-thermaltake-rgb.service`
+   - Check status: `Settings → Users → Services` or run `systemctl status unraid-ttriing.service`
 
 ### Option 2: Manual Installation
 
 1. **Download the files:**
    ```bash
-   wget https://github.com/chestm007/linux_thermaltake_riing/archive/master.zip
+   wget https://github.com/Alyxiana/unraid-ttriing/archive/master.zip
    unzip master.zip
-   cd linux_thermaltake_riing-master/unraid
+   cd unraid-ttriing-master/unraid
    ```
 
 2. **Run the installation script:**
@@ -46,22 +48,15 @@ This guide will help you install the Thermaltake Riing RGB controller software o
    ./install.sh
    ```
 
-### Option 3: Docker (Alternative)
-
-1. **Build and run with Docker Compose:**
-   ```bash
-   cd linux_thermaltake_riing
-   mkdir -p config
-   cp linux_thermaltake_rgb/assets/config.yml config/
-   docker-compose up -d
-   ```
-
 ## Configuration
 
-Edit your configuration file at:
-- Plugin: `/boot/config/plugins/linux-thermaltake-rgb/config/config.yml`
-- Manual: `/etc/linux_thermaltake_rgb/config.yml`
-- Docker: `./config/config.yml`
+The daemon automatically detects configuration in this order:
+1. **UNRAID Flash Storage** (preferred): `/boot/config/plugins/unraid-ttriing/config/config.yml`
+2. **System Config**: `/etc/unraid_ttriing/config.yml` (symlink from UNRAID location)
+3. **Environment Variable**: `THERMALTAKE_CONFIG_DIR` (if set)
+4. **Repository Config**: `unraid_ttriing/assets/config.yml` (fallback)
+
+**For UNRAID installations**, always edit: `/boot/config/plugins/unraid-ttriing/config/config.yml`
 
 ### Basic Configuration Example
 
@@ -105,7 +100,7 @@ Common sensor names in UNRAID:
 
 1. Check the logs:
    ```bash
-   journalctl -u linux-thermaltake-rgb.service -f
+   journalctl -u unraid-ttriing.service -f
    ```
 
 2. Check USB device permissions:
@@ -115,7 +110,7 @@ Common sensor names in UNRAID:
 
 3. Verify configuration:
    ```bash
-   python3 -c "import yaml; yaml.safe_load(open('/etc/linux_thermaltake_rgb/config.yml'))"
+   python3 -c "import yaml; yaml.safe_load(open('/boot/config/plugins/unraid-ttriing/config/config.yml'))"
    ```
 
 ### Devices Not Detected

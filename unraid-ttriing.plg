@@ -1,0 +1,249 @@
+<!DOCTYPE PLUGIN [
+    <!ENTITY name "unraid-ttriing">
+    <!ENTITY author "Alyxiana">
+    <!ENTITY version "1.3.0">
+    <!ENTITY pluginURL "https://github.com/Alyxiana/unraid-ttriing">
+    <!ENTITY pluginDescription "Linux driver and daemon for Thermaltake Riing RGB fans and controllers (Original work by Max Chesterfield, forked and maintained by Alyxiana)">
+]>
+<PLUGIN name="&name;" author="&author;" version="&version;" pluginURL="&pluginURL;" pluginDescription="&pluginDescription;">
+    <CHANGES>
+        ###&version;
+        - Updated for UNRAID compatibility
+        - Removed GObject dependency
+        - Added USB device permissions
+        - Support for configuration on flash drive
+    </CHANGES>
+
+    <DEPENDENCIES>
+        <OS version=">=6.9.0"/>
+        <PYTHON version=">=3.6"/>
+    </DEPENDENCIES>
+
+    <INSTALL>
+        <RUN>
+            echo "Installing Linux Thermaltake RGB plugin..."
+            
+            # Create plugin directories
+            mkdir -p /boot/config/plugins/&name;
+            mkdir -p /boot/config/plugins/&name;/config
+            mkdir -p /usr/local/emhttp/plugins/&name;
+            
+            # Install Python package
+            if [ ! -f /usr/local/sbin/unraid-ttriing ]; then
+                echo "Installing Python dependencies..."
+                /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 install pyyaml psutil pyusb numpy
+                
+                echo "Installing unraid-ttriing..."
+                /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 install unraid_ttriing==&version;
+            fi
+            
+            # Create udev rules directly
+            cat > /etc/udev/rules.d/99-thermaltake-usb.rules << 'EOF'
+# Thermaltake RGB Controller USB Device Access Rules
+# These rules allow the unraid-ttriing daemon to access USB devices
+
+# Thermaltake G3 Controller
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="264d", ATTR{idProduct}=="0fa7", MODE="0660", GROUP="users", TAG+="uaccess"
+
+# Thermaltake Riing Trio Controller
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="264d", ATTR{idProduct}=="0fa8", MODE="0660", GROUP="users", TAG+="uaccess"
+
+# Additional Thermaltake RGB controllers
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="264d", MODE="0660", GROUP="users", TAG+="uaccess"
+
+# Allow HID access for RGB control
+ACTION=="add", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="264d", MODE="0660", GROUP="users", TAG+="uaccess"
+
+# Thermaltake Riing Quad Controller
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="264a", ATTRS{idProduct}=="2260", MODE="0666"
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="264a", ATTRS{idProduct}=="2261", MODE="0666"
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="264a", ATTRS{idProduct}=="2262", MODE="0666"
+
+# Reload rules after adding with: udevadm control --reload-rules
+EOF
+            
+            udevadm control --reload-rules
+            
+            # Create systemd service directly
+            cat > /usr/lib/systemd/system/unraid-ttriing.service << 'EOF'
+[Unit]
+Description=Thermaltake RGB Controller Daemon
+Documentation=https://github.com/Alyxiana/unraid-ttriing
+AssertPathExists=/boot/config/plugins/unraid-ttriing/config/config.yml
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/unraid-ttriing
+ExecStart=/usr/local/bin/unraid-ttriing
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=5s
+User=root
+Group=root
+
+# Security settings - relaxed for UNRAID
+CapabilityBoundingSet=CAP_SYS_RAWIO
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=no
+DevicePolicy=closed
+DeviceAllow=char-usb_device rw
+DeviceAllow=char-hidraw rw
+ProtectSystem=strict
+ProtectHome=true
+ProtectControlGroups=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+RestrictAddressFamilies=AF_UNIX
+RestrictRealtime=yes
+RestrictNamespaces=yes
+MemoryDenyWriteExecute=yes
+LockPersonality=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service @raw-io
+
+[Install]
+WantedBy=multi-user.target
+EOF
+            
+            systemctl daemon-reload
+            
+            # Install default config if not exists
+            if [ ! -f /boot/config/plugins/&name;/config/config.yml ]; then
+                echo "Installing default configuration..."
+                cat > "${CONFIG_DIR}/config/config.yml" << 'EOF'
+#####################################################################
+#
+#  Configuration for 3 Thermaltake Controllers with 4 fans each
+#
+#####################################################################
+
+controllers:
+  # Controller 1 - First RGB controller
+  - unit: 1
+    type: g3                    # or riingtrio if you have Trio controllers
+    devices:
+      1: Riing Plus           # Port 1: Fan 1
+      2: Riing Plus           # Port 2: Fan 2
+      3: Riing Plus           # Port 3: Fan 3
+      4: Riing Plus           # Port 4: Fan 4
+      5: Riing Plus           # Port 5: Fan 5
+
+  # Controller 2 - Second RGB controller  
+  - unit: 2
+    type: g3                    # or riingtrio if you have Trio controllers
+    devices:
+      1: Riing Plus           # Port 1: Fan 6
+      2: Riing Plus           # Port 2: Fan 7
+      3: Riing Plus           # Port 3: Fan 8
+      4: Riing Plus           # Port 4: Fan 9
+      5: Riing Plus           # Port 5: Fan 10
+
+  # Controller 3 - Third RGB controller
+  - unit: 3
+    type: g3                    # or riingtrio if you have Trio controllers
+    devices:
+      1: Riing Plus           # Port 1: Fan 11
+      2: Riing Plus           # Port 2: Fan 12
+      3: Riing Plus           # Port 3: Fan 13
+      4: Riing Plus           # Port 4: Fan 14
+      5: Riing Plus           # Port 5: Fan 15
+
+# Fan Control Configuration
+# Choose ONE of the following fan_manager configurations:
+
+# Option 1: Fixed speed for all fans (simple)
+fan_manager:
+  model: locked_speed
+  speed: 0                    # 0-100% speed for all 12 fans
+
+# Option 2: Temperature-based control (recommended)
+# fan_manager:
+#   model: temp_target
+#   target: 45                 # Target temperature in Celsius for motherboard
+#   sensor_name: nvme-pci-0100  # MB Temp sensor
+#   multiplier: 5               # How aggressively to adjust speeds
+
+# Option 3: Custom fan curve
+# fan_manager:
+#   model: curve
+#   points:
+#     - [0, 0]      # 0°C = 0% speed
+#     - [40, 25]    # 40°C = 25% speed
+#     - [50, 50]    # 50°C = 50% speed  
+#     - [65, 100]   # 65°C = 100% speed
+#   sensor_name: nvme-pci-0100  # MB Temp sensor
+
+# RGB Lighting Configuration
+# Choose ONE of the following lighting_manager configurations:
+
+# Option 1: Static color for all fans
+lighting_manager:
+  model: full
+  r: 0                         # Red (0-255)
+  g: 255                       # Green (0-255) 
+  b: 100                       # Blue (0-255)
+# Option 2: Temperature-based lighting (changes color with temp)
+# lighting_manager:
+#   model: temperature
+#   sensor_name: nvme-pci-0100  # MB Temp sensor
+#   cold: 40                    # Blue at 40°C
+#   target: 50                  # Green at 50°C
+#   hot: 65                     # Red at 65°C
+#   speed: normal               # Animation speed
+
+# Option 3: Flow effect (RGB spectrum cycling)
+# lighting_manager:
+#   model: flow
+#   speed: normal               # slow, normal, fast, extreme
+
+# Option 4: Pulse effect
+# lighting_manager:
+#   model: pulse
+#   r: 255
+#   g: 0
+#   b: 0
+#   speed: normal
+EOF
+            else
+                echo "Existing configuration found, preserving it"
+            fi
+            
+            # Create symlink for config
+            mkdir -p /etc/unraid_ttriing
+            ln -sf /boot/config/plugins/&name;/config/config.yml /etc/unraid_ttriing/config.yml
+            
+            echo "Installation complete!"
+        </RUN>
+    </INSTALL>
+
+    <REMOVE>
+        <RUN>
+            echo "Removing Linux Thermaltake RGB plugin..."
+            
+            # Stop and disable service
+            systemctl stop unraid-ttriing.service 2>/dev/null
+            systemctl disable unraid-ttriing.service 2>/dev/null
+            
+            # Remove systemd service
+            rm -f /usr/lib/systemd/system/unraid-ttriing.service
+            systemctl daemon-reload
+            
+            # Remove udev rules
+            rm -f /etc/udev/rules.d/99-thermaltake-usb.rules
+            udevadm control --reload-rules
+            
+            # Remove Python package
+            /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 uninstall -y unraid_ttriing
+            
+            # Remove config symlink
+            rm -f /etc/unraid_ttriing/config.yml
+            
+            # Note: We keep the config in /boot/config/plugins/&name; to preserve settings
+            
+            echo "Removal complete!"
+        </RUN>
+    </REMOVE>
+</PLUGIN>

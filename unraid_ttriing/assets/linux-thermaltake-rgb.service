@@ -1,10 +1,10 @@
 [Unit]
-AssertPathExists=/etc/linux_thermaltake_rgb/config.yml
+AssertPathExists=/boot/config/plugins/unraid-ttriing/config/config.yml
 
 [Service]
-EnvironmentFile=-/etc/default/linux-thermaltake-rgb
+EnvironmentFile=-/etc/default/unraid-ttriing
 
-ExecStart=/usr/bin/linux-thermaltake-rgb
+ExecStart=/usr/bin/unraid-ttriing
 
 Restart=always
 RestartSec=5s

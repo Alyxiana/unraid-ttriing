@@ -17,10 +17,24 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-from linux_thermaltake_rgb.devices import ThermaltakeRGBDevice, ThermaltakeFanDevice
+import logging
+import sys
+
+from unraid_ttriing import DEBUG
+from unraid_ttriing.daemon.daemon import ThermaltakeDaemon
 
 
-class ThermaltakeRiingPlusFan(ThermaltakeRGBDevice, ThermaltakeFanDevice):
-    model = 'Riing Plus'
-    num_leds = 12
-    index_per_led = 3
+def main():
+    logging.basicConfig(stream=sys.stdout,
+                        level=logging.DEBUG if DEBUG else logging.INFO,
+                        format='%(message)s')
+
+    daemon = ThermaltakeDaemon()
+    try:
+        daemon.run()
+    except KeyboardInterrupt:
+        daemon.stop()
+
+
+if __name__ == '__main__':
+    main()

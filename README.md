@@ -2,7 +2,7 @@
 
 # Linux driver and daemon for Thermaltake Riing
 
-**UNRAID-compatible fork by [Alyxiana](https://github.com/Alyxiana)**
+**UNRAID-compatible fork maintained by [Alyxiana](https://github.com/Alyxiana)**
 
 Original work by [Max Chesterfield](https://github.com/chestm007)
 
@@ -30,18 +30,19 @@ See [UNRAID-README.md](UNRAID-README.md) for detailed UNRAID installation instru
 
 ### Pypi
 
-`sudo pip3 install linux_thermaltake_rgb`  
+`sudo pip3 install unraid_ttriing`  
 The setup file will create the systemd unit
-in `/usr/share/linux_thermaltake_rgb`  
+in `/usr/share/unraid_ttriing`  
 you will need to copy these to the appropriate locations:
 
 ```bash
-sudo cp /usr/share/linux_thermaltake_rgb/linux-thermaltake-rgb.service /usr/lib/systemd/system/
+sudo cp /usr/share/unraid_ttriing/linux-thermaltake-rgb.service /usr/lib/systemd/system/
 
 # and if this is a fresh install copy the default config file:
-sudo mkdir /etc/linux_thermaltake_rgb/
-sudo cp /usr/share/linux_thermaltake_rgb/config.yml /etc/linux_thermaltake_rgb/
+sudo mkdir /etc/unraid_ttriing/
+sudo cp /usr/share/unraid_ttriing/config.yml /etc/unraid_ttriing/
 ```
+
 
 ### Arch linux
 
@@ -54,10 +55,10 @@ start and enable the systemd service
 
 
 ## Configuration
-the configuration file is expected to be in: `/etc/linux_thermaltake_rgb/config.yml`  
+the configuration file is expected to be in: `/etc/unraid_ttriing/config.yml`  
 edit and configure suitably.  
 
-example config is in `linux_thermaltake_rgb/assets/config.yml`  
+example config is created automatically at installation time in `/etc/unraid_ttriing/config.yml`  
 
 ### Controller Types
 - g3

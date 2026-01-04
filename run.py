@@ -1,8 +1,8 @@
 import logging
 import sys
 
-from linux_thermaltake_rgb import DEBUG
-from linux_thermaltake_rgb.daemon.daemon import ThermaltakeDaemon
+from unraid_ttriing import DEBUG
+from unraid_ttriing.daemon.daemon import ThermaltakeDaemon
 
 
 def main():

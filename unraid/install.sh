@@ -4,13 +4,13 @@
 
 set -e
 
-PLUGIN_NAME="linux-thermaltake-rgb"
+PLUGIN_NAME="unraid-ttriing"
 VERSION="1.3.0"
 PLUGIN_DIR="/usr/local/emhttp/plugins/${PLUGIN_NAME}"
 CONFIG_DIR="/boot/config/plugins/${PLUGIN_NAME}"
-SYSTEM_CONFIG_DIR="/etc/linux_thermaltake_rgb"
+SYSTEM_CONFIG_DIR="/etc/unraid_ttriing"
 
-echo "Installing Linux Thermaltake RGB v${VERSION} for UNRAID..."
+echo "Installing unraid-ttriing v${VERSION} for UNRAID..."
 echo "=================================================="
 
 # Check if running as root
@@ -43,8 +43,8 @@ if ! /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 list |
 fi
 
 # Install the package
-echo "Installing linux-thermaltake-rgb package..."
-/usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 install "linux_thermaltake_rgb==${VERSION}"
+echo "Installing unraid-ttriing package..."
+/usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 install "unraid_ttriing==${VERSION}"
 
 # Install udev rules
 echo "Installing USB device rules..."
@@ -54,13 +54,13 @@ udevadm trigger
 
 # Install systemd service
 echo "Installing systemd service..."
-cp linux-thermaltake-rgb.service /usr/lib/systemd/system/
+cp unraid-ttriing.service /usr/lib/systemd/system/
 systemctl daemon-reload
 
 # Install configuration
 if [ ! -f "${CONFIG_DIR}/config/config.yml" ]; then
     echo "Installing default configuration..."
-    cp ../linux_thermaltake_rgb/assets/config.yml "${CONFIG_DIR}/config/config.yml"
+    cp ../unraid_ttriing/assets/config.yml "${CONFIG_DIR}/config/config.yml"
 else
     echo "Existing configuration found, preserving it"
 fi
@@ -70,22 +70,22 @@ ln -sf "${CONFIG_DIR}/config/config.yml" "${SYSTEM_CONFIG_DIR}/config.yml"
 
 # Enable and start service
 echo "Enabling and starting service..."
-systemctl enable linux-thermaltake-rgb.service
-systemctl start linux-thermaltake-rgb.service
+systemctl enable unraid-ttriing.service
+systemctl start unraid-ttriing.service
 
 # Check status
 sleep 2
-if systemctl is-active --quiet linux-thermaltake-rgb.service; then
+if systemctl is-active --quiet unraid-ttriing.service; then
     echo "✓ Service is running successfully!"
 else
-    echo "✗ Service failed to start. Check logs with: journalctl -u linux-thermaltake-rgb.service"
+    echo "✗ Service failed to start. Check logs with: journalctl -u unraid-ttriing.service"
 fi
 
 echo ""
 echo "Installation complete!"
 echo "Configuration file location: ${CONFIG_DIR}/config/config.yml"
-echo "View service status: systemctl status linux-thermaltake-rgb.service"
-echo "View logs: journalctl -u linux-thermaltake-rgb.service -f"
+echo "View service status: systemctl status unraid-ttriing.service"
+echo "View logs: journalctl -u unraid-ttriing.service -f"
 echo ""
 echo "To configure your devices, edit the config file and restart the service:"
-echo "  systemctl restart linux-thermaltake-rgb.service"
+echo "  systemctl restart unraid-ttriing.service"

@@ -19,13 +19,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 import time
 
-from linux_thermaltake_rgb.controllers import ThermaltakeController
-from linux_thermaltake_rgb.fan_manager import FanModel
-from linux_thermaltake_rgb.daemon.config import Config
-from linux_thermaltake_rgb.lighting_manager import LightingEffect
-from linux_thermaltake_rgb import devices, LOGGER
-from linux_thermaltake_rgb.fan_manager import FanManager
-from linux_thermaltake_rgb.devices import ThermaltakeDevice
+from unraid_ttriing.controllers import ThermaltakeController
+from unraid_ttriing.fan_manager import FanModel
+from unraid_ttriing.daemon.config import Config
+from unraid_ttriing.lighting_manager import LightingEffect
+from unraid_ttriing import devices, LOGGER
+from unraid_ttriing.fan_manager import FanManager
+from unraid_ttriing.devices import ThermaltakeDevice
 
 
 class ThermaltakeDaemon:

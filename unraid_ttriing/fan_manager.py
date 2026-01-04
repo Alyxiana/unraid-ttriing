@@ -23,8 +23,8 @@ from threading import Thread
 import numpy as np
 from psutil import sensors_temperatures
 
-from linux_thermaltake_rgb import LOGGER
-from linux_thermaltake_rgb.classified_object import ClassifiedObject
+from unraid_ttriing import LOGGER
+from unraid_ttriing.classified_object import ClassifiedObject
 
 
 class FanModel(ClassifiedObject):

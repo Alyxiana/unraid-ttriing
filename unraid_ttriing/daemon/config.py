@@ -21,13 +21,13 @@ import os
 
 import yaml
 
-from linux_thermaltake_rgb import LOGGER
+from unraid_ttriing import LOGGER
 
 
 class Config:
-    abs_config_dir = '/etc/linux_thermaltake_rgb'
-    rel_config_dir = 'linux_thermaltake_rgb/assets'
-    unraid_config_dir = '/boot/config/plugins/linux-thermaltake-rgb/config'
+    abs_config_dir = '/etc/unraid_ttriing'
+    rel_config_dir = 'unraid_ttriing/assets'
+    unraid_config_dir = '/boot/config/plugins/unraid-ttriing/config'
     config_file_name = 'config.yml'
 
     def __init__(self):

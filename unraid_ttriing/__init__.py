@@ -1,7 +1,8 @@
 """
-linux_thermaltake_rgb
+unraid_ttriing
 Software to control your thermaltake hardware
 Copyright (C) 2018  Max Chesterfield (chestm007@hotmail.com)
+Modified and maintained by Alyxiana (https://github.com/Alyxiana)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -17,34 +18,9 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-from linux_thermaltake_rgb.devices import ThermaltakeRGBDevice
+import logging
+import os
 
 
-class ThermaltakePR22D5Res(ThermaltakeRGBDevice):
-    model = 'Pacific PR22-D5 Plus'
-    num_leds = 12
-    index_per_led = 3
-
-
-class ThermaltakeW4PlusWB(ThermaltakeRGBDevice):
-    model = 'Pacific W4 Plus CPU Waterblock'
-    num_leds = 12
-    index_per_led = 3
-
-
-class ThermaltakeVGTX1080PlusWB(ThermaltakeRGBDevice):
-    model = 'Pacific V-GTX 1080Ti Plus GPU Waterblock'
-    num_leds = 12
-    index_per_led = 3
-
-
-class ThermaltakeRadPlusLED(ThermaltakeRGBDevice):
-    model = 'Pacific Rad Plus LED Panel'
-    num_leds = 12
-    index_per_led = 3
-
-
-class ThermaltakeLumiPlusLED(ThermaltakeRGBDevice):
-    model = 'Lumi Plus LED Strip'
-    num_leds = 12
-    index_per_led = 3
+LOGGER = logging.getLogger(__name__)
+DEBUG = bool(os.environ.get('DEBUG', False))

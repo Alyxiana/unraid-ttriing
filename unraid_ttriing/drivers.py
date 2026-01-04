@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import usb
 
-from linux_thermaltake_rgb import LOGGER
+from unraid_ttriing import LOGGER
 
 
 class ThermaltakeControllerDriver:
