@@ -15,24 +15,6 @@
 
 <DESCRIPTION>
 Linux driver and daemon for Thermaltake Riing RGB controllers with UNRAID dashboard integration.
-
-This plugin provides:
-- Control of Thermaltake RGB fans and lighting
-- Real-time dashboard monitoring
-- Automatic fan speed control based on temperature
-- Multiple lighting effects and modes
-- USB device auto-configuration
-- Persistent configuration storage
-
-Supported devices:
-- Flow Riing RGB
-- Lumi Plus LED Strip
-- Pacific PR22-D5 Plus
-- Pacific Rad Plus LED Panel
-- Pacific V-GTX 1080Ti Plus GPU Waterblock
-- Pacific W4 Plus CPU Waterblock
-- Riing Plus
-- Riing Trio
 </DESCRIPTION>
 
 <REQUIREMENTS>
@@ -66,15 +48,9 @@ Supported devices:
 
 <INSTALL>
 #!/bin/bash
-
-# Create plugin directories
 mkdir -p /boot/config/plugins/&name;/config
 mkdir -p /etc/linux_thermaltake_rgb
-
-# Install Python dependencies
 /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 install pyyaml psutil pyusb numpy
-
-# Install the package from the current branch
 cd /tmp
 wget https://github.com/Alyxiana/unraid-ttriing/archive/feature/unraid-dashboard-panel.tar.gz
 tar -xzf feature-unraid-dashboard-panel.tar.gz
@@ -82,46 +58,28 @@ cd linux_thermaltake_riing-feature-unraid-dashboard-panel
 /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python setup.py install
 cd /tmp
 rm -rf linux_thermaltake_riing-feature-unraid-dashboard-panel feature-unraid-dashboard-panel.tar.gz
-
-# Reload udev rules
 udevadm control --reload-rules
 udevadm trigger
-
-# Reload systemd
 systemctl daemon-reload
-
-# Create default config if it doesn't exist
 if [ ! -f /boot/config/plugins/&name;/config/config.yml ]; then
-    cp /boot/config/plugins/&name;/config/config.yml.example /boot/config/plugins/&name;/config/config.yml
+cp /boot/config/plugins/&name;/config/config.yml.example /boot/config/plugins/&name;/config/config.yml
 fi
-
-# Symlink config for daemon
 ln -sf /boot/config/plugins/&name;/config/config.yml /etc/linux_thermaltake_rgb/config.yml
-
 echo "Plugin installed successfully"
 </INSTALL>
 
 <REMOVE>
 #!/bin/bash
-
-# Stop and disable service
 systemctl stop linux-thermaltake-rgb.service 2>/dev/null || true
 systemctl disable linux-thermaltake-rgb.service 2>/dev/null || true
-
-# Remove package
 /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 uninstall -y linux_thermaltake_rgb
-
-# Remove files
 rm -f /etc/udev/rules.d/99-thermaltake-usb.rules
 rm -f /usr/lib/systemd/system/linux-thermaltake-rgb.service
 rm -f /etc/linux_thermaltake_rgb/config.yml
 rm -rf /usr/local/emhttp/plugins/&name;
 rm -rf /etc/linux_thermaltake_rgb
-
-# Reload udev and systemd
 udevadm control --reload-rules
 systemctl daemon-reload
-
 echo "Plugin removed successfully"
 </REMOVE>
 
