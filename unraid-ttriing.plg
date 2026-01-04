@@ -52,12 +52,6 @@ Supported devices:
 <INSTALL>/usr/bin/install -D -m 644 linux-thermaltake-rgb.service /usr/lib/systemd/system/linux-thermaltake-rgb.service</INSTALL>
 </FILE>
 
-<FILE Name="dashboard.inc">
-<URL>https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel/unraid/dashboard.inc</URL>
-<MD5>1d849e2712fb90b066ceec0bc0d69fb2</MD5>
-<INSTALL>/usr/bin/install -D -m 644 dashboard.inc /usr/local/emhttp/plugins/&name;/dashboard.inc</INSTALL>
-</FILE>
-
 <FILE Name="config.yml">
 <URL>https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel/linux_thermaltake_rgb/assets/config.yml</URL>
 <MD5>787eb81c8c2a785201e537f1c6e4bb85</MD5>
@@ -67,9 +61,13 @@ Supported devices:
 <INSTALL>
 #!/bin/bash
 
-# Create plugin directories
+# Create plugin directory structure
+mkdir -p /usr/local/emhttp/plugins/&name;
 mkdir -p /boot/config/plugins/&name;/config
 mkdir -p /etc/linux_thermaltake_rgb
+
+# Install dashboard.inc manually
+wget -O /usr/local/emhttp/plugins/&name;/dashboard.inc https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel/unraid/dashboard.inc
 
 # Install Python dependencies
 /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 install pyyaml psutil pyusb numpy
