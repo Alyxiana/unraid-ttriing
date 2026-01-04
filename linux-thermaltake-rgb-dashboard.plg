@@ -53,8 +53,8 @@ Supported devices:
 </FILE>
 
 <FILE Name="dashboard.inc">
-<URL>https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel/unraid/dashboard-fixed.inc</URL>
-<MD5>1d849e2712fb90b066ceec0bc0d69fb2</MD5>
+<URL>https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel/unraid/dashboard.inc</URL>
+<MD5>fc60d6e4d1eea7c47163e683ad3c9aaa</MD5>
 <INSTALL>/usr/bin/install -D -m 644 dashboard.inc /usr/local/emhttp/plugins/&name;/dashboard.inc</INSTALL>
 </FILE>
 

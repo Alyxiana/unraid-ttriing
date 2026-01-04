@@ -1,36 +1,57 @@
 <?php
 /**
  * Linux Thermaltake RGB Dashboard Panel for UNRAID
- * Displays real-time status of Thermaltake RGB controllers, fans, and lighting
+ * Integrates with UNRAID's existing dashboard system
  */
 
 // Plugin configuration
 $plugin_name = 'linux-thermaltake-rgb';
 $config_file = '/boot/config/plugins/' . $plugin_name . '/config/config.yml';
-$service_name = 'linux-thermaltake-rgb.service';
 
-// Check if service is running
-$service_status = shell_exec('systemctl is-active ' . $service_name . ' 2>/dev/null');
-$service_enabled = shell_exec('systemctl is-enabled ' . $service_name . ' 2>/dev/null');
+// Check if configuration exists
+$config_exists = file_exists($config_file);
 
-// Get daemon status information
-$status_data = [];
-$daemon_running = trim($service_status) === 'active';
-
-if ($daemon_running) {
-    // Try to get status from the daemon (we'll need to add a status endpoint)
-    $status_json = shell_exec('curl -s --max-time 2 http://localhost:5334/status 2>/dev/null');
-    if ($status_json) {
-        $status_data = json_decode($status_json, true) ?: [];
-    }
-    
-    // Get USB device info
-    $usb_devices = shell_exec('lsusb | grep 264d 2>/dev/null');
-    
-    // Get service logs (last 5 lines)
-    $logs = shell_exec('journalctl -u ' . $service_name . ' --no-pager -n 5 --output=cat 2>/dev/null');
+// Check if daemon process is running (using ps instead of systemctl)
+$daemon_running = false;
+$process_output = [];
+exec('ps aux | grep "linux-thermaltake-rgb" | grep -v grep', $process_output);
+if (!empty($process_output)) {
+    $daemon_running = true;
 }
 
+// Get USB device info
+$usb_devices = [];
+exec('lsusb | grep 264d 2>/dev/null', $usb_devices);
+$usb_count = count($usb_devices);
+
+// Try to read configuration
+$config_data = [];
+if ($config_exists) {
+    $config_content = file_get_contents($config_file);
+    if ($config_content) {
+        // Simple YAML parsing for basic info
+        $lines = explode("\n", $config_content);
+        foreach ($lines as $line) {
+            if (strpos($line, 'controllers:') !== false) {
+                $config_data['has_controllers'] = true;
+            }
+            if (strpos($line, 'fan_manager:') !== false) {
+                $config_data['has_fan_manager'] = true;
+            }
+            if (strpos($line, 'lighting_manager:') !== false) {
+                $config_data['has_lighting_manager'] = true;
+            }
+        }
+    }
+}
+
+// Get recent logs from UNRAID log system
+$logs = [];
+$log_file = '/var/log/syslog';
+if (file_exists($log_file)) {
+    $command = "tail -n 5 " . escapeshellarg($log_file) . " | grep -i thermaltake";
+    exec($command, $logs);
+}
 ?>
 
 <div class="panel">
@@ -42,87 +63,105 @@ if ($daemon_running) {
     </div>
     
     <div class="panel-body">
-        <?php if (!$daemon_running): ?>
+        <?php if (!$config_exists): ?>
             <div class="alert alert-warning">
                 <i class="fa fa-exclamation-triangle"></i>
-                Daemon is not running. Check service status and logs.
+                Configuration not found. Please configure your devices.
             </div>
         <?php endif; ?>
         
-        <!-- Service Controls -->
-        <div class="service-controls">
-            <button class="btn btn-sm <?php echo $daemon_running ? 'btn-danger' : 'btn-success'; ?>"
-                    onclick="toggleService('<?php echo $service_name; ?>', '<?php echo $daemon_running ? 'stop' : 'start'; ?>')">
-                <i class="fa fa-<?php echo $daemon_running ? 'stop' : 'play'; ?>"></i>
-                <?php echo $daemon_running ? 'Stop Service' : 'Start Service'; ?>
+        <!-- Status Overview -->
+        <div class="status-overview">
+            <div class="status-item">
+                <strong>Service:</strong>
+                <span class="<?php echo $daemon_running ? 'text-success' : 'text-danger'; ?>">
+                    <?php echo $daemon_running ? 'Running' : 'Stopped'; ?>
+                </span>
+            </div>
+            
+            <div class="status-item">
+                <strong>Devices:</strong>
+                <span><?php echo $usb_count; ?> USB controllers detected</span>
+            </div>
+            
+            <div class="status-item">
+                <strong>Config:</strong>
+                <span class="<?php echo $config_exists ? 'text-success' : 'text-warning'; ?>">
+                    <?php echo $config_exists ? 'Found' : 'Missing'; ?>
+                </span>
+            </div>
+        </div>
+        
+        <!-- Configuration Summary -->
+        <?php if (!empty($config_data)): ?>
+        <div class="config-summary">
+            <h5>Configuration</h5>
+            <div class="row">
+                <?php if (isset($config_data['has_controllers'])): ?>
+                <div class="col-sm-4">
+                    <i class="fa fa-microchip text-info"></i> Controllers
+                </div>
+                <?php endif; ?>
+                <?php if (isset($config_data['has_fan_manager'])): ?>
+                <div class="col-sm-4">
+                    <i class="fa fa-fan text-info"></i> Fan Control
+                </div>
+                <?php endif; ?>
+                <?php if (isset($config_data['has_lighting_manager'])): ?>
+                <div class="col-sm-4">
+                    <i class="fa fa-lightbulb text-info"></i> Lighting
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+        
+        <!-- USB Devices -->
+        <?php if (!empty($usb_devices)): ?>
+        <div class="usb-devices">
+            <h5>Connected Devices</h5>
+            <div class="device-list">
+                <?php foreach ($usb_devices as $device): ?>
+                    <div class="device-item">
+                        <code><?php echo htmlspecialchars(trim($device)); ?></code>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+        
+        <!-- Control Actions -->
+        <div class="control-actions">
+            <button class="btn btn-sm btn-default" onclick="openConfig()">
+                <i class="fa fa-cog"></i> Configure
             </button>
             
-            <button class="btn btn-sm btn-default" onclick="showLogs('<?php echo $service_name; ?>')">
+            <button class="btn btn-sm btn-default" onclick="openLogs()">
                 <i class="fa fa-list-alt"></i> View Logs
             </button>
             
-            <button class="btn btn-sm btn-default" onclick="editConfig()">
-                <i class="fa fa-cog"></i> Configure
+            <?php if ($daemon_running): ?>
+            <button class="btn btn-sm btn-warning" onclick="stopDaemon()">
+                <i class="fa fa-stop"></i> Stop
             </button>
-        </div>
-        
-        <!-- Device Status -->
-        <?php if ($daemon_running && !empty($usb_devices)): ?>
-        <div class="device-status">
-            <h4>Connected Devices</h4>
-            <pre class="device-list"><?php echo htmlspecialchars(trim($usb_devices)); ?></pre>
-        </div>
-        <?php endif; ?>
-        
-        <!-- Controller Information -->
-        <?php if (!empty($status_data)): ?>
-        <div class="controller-info">
-            <h4>Controller Status</h4>
-            <div class="row">
-                <?php if (isset($status_data['controllers'])): ?>
-                    <?php foreach ($status_data['controllers'] as $controller): ?>
-                    <div class="col-sm-6">
-                        <div class="controller-card">
-                            <strong>Controller <?php echo htmlspecialchars($controller['unit']); ?></strong>
-                            <br>Type: <?php echo htmlspecialchars($controller['type']); ?>
-                            <br>Devices: <?php echo count($controller['devices']); ?>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
-            
-            <?php if (isset($status_data['fans'])): ?>
-            <h5>Fan Status</h5>
-            <div class="fan-status">
-                <?php foreach ($status_data['fans'] as $fan): ?>
-                <div class="fan-item">
-                    Fan <?php echo htmlspecialchars($fan['id']); ?>: 
-                    <span class="fan-speed"><?php echo $fan['speed']; ?>%</span>
-                </div>
-                <?php endforeach; ?>
-            </div>
-            <?php endif; ?>
-            
-            <?php if (isset($status_data['lighting'])): ?>
-            <h5>Lighting Status</h5>
-            <div class="lighting-status">
-                Mode: <?php echo htmlspecialchars($status_data['lighting']['mode']); ?>
-                <?php if (isset($status_data['lighting']['color'])): ?>
-                <br>Color: RGB(<?php echo $status_data['lighting']['color']['r']; ?>, 
-                              <?php echo $status_data['lighting']['color']['g']; ?>, 
-                              <?php echo $status_data['lighting']['color']['b']; ?>)
-                <?php endif; ?>
-            </div>
+            <?php else: ?>
+            <button class="btn btn-sm btn-success" onclick="startDaemon()">
+                <i class="fa fa-play"></i> Start
+            </button>
             <?php endif; ?>
         </div>
-        <?php endif; ?>
         
         <!-- Recent Logs -->
         <?php if (!empty($logs)): ?>
         <div class="recent-logs">
             <h5>Recent Logs</h5>
-            <pre class="log-viewer"><?php echo htmlspecialchars(trim($logs)); ?></pre>
+            <div class="log-viewer">
+                <?php foreach ($logs as $log_line): ?>
+                    <div class="log-line">
+                        <?php echo htmlspecialchars(substr($log_line, 0, 100)); ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
         <?php endif; ?>
     </div>
@@ -162,49 +201,6 @@ if ($daemon_running) {
     color: #ecf0f1;
 }
 
-.service-controls {
-    margin-bottom: 15px;
-}
-
-.service-controls .btn {
-    margin-right: 5px;
-}
-
-.device-status, .controller-info, .recent-logs {
-    margin-top: 15px;
-}
-
-.device-list, .log-viewer {
-    background: #34495e;
-    padding: 10px;
-    border-radius: 3px;
-    font-size: 12px;
-    overflow-x: auto;
-}
-
-.controller-card {
-    background: #34495e;
-    padding: 10px;
-    border-radius: 3px;
-    margin-bottom: 10px;
-}
-
-.fan-status, .lighting-status {
-    background: #34495e;
-    padding: 10px;
-    border-radius: 3px;
-    margin-top: 10px;
-}
-
-.fan-item {
-    margin-bottom: 5px;
-}
-
-.fan-speed {
-    font-weight: bold;
-    color: #3498db;
-}
-
 .alert {
     padding: 10px;
     border-radius: 3px;
@@ -216,34 +212,106 @@ if ($daemon_running) {
     color: #fff;
 }
 
-h4, h5 {
+.status-overview {
+    margin-bottom: 15px;
+}
+
+.status-item {
+    margin-bottom: 5px;
+}
+
+.text-success {
+    color: #27ae60;
+}
+
+.text-danger {
+    color: #e74c3c;
+}
+
+.text-warning {
+    color: #f39c12;
+}
+
+.text-info {
+    color: #3498db;
+}
+
+.config-summary, .usb-devices, .recent-logs {
+    margin-top: 15px;
+}
+
+.device-list, .log-viewer {
+    background: #34495e;
+    padding: 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.device-item, .log-line {
+    margin-bottom: 3px;
+    word-break: break-all;
+}
+
+.control-actions {
+    margin-top: 15px;
+}
+
+.control-actions .btn {
+    margin-right: 5px;
+}
+
+h5 {
     color: #ecf0f1;
     margin-top: 0;
     margin-bottom: 10px;
+    font-size: 14px;
 }
 </style>
 
 <script>
-function toggleService(service, action) {
-    var cmd = action === 'start' ? 'systemctl start ' + service : 'systemctl stop ' + service;
-    
-    $.post('/plugins/dynamix.docker.manager/scripts/execute', {
-        cmd: cmd
-    }, function(response) {
-        setTimeout(function() {
-            location.reload();
-        }, 2000);
+function openConfig() {
+    window.open('/Config.php?view=plugins&name=<?php echo $plugin_name; ?>', '_blank');
+}
+
+function openLogs() {
+    window.open('/var/log/syslog', '_blank');
+}
+
+function startDaemon() {
+    // Use UNRAID's exec API to start the daemon
+    fetch('/plugins/dynamix.docker.manager/scripts/execute', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'cmd=/usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python /usr/local/bin/linux-thermaltake-rgb'
+    })
+    .then(response => response.text())
+    .then(data => {
+        setTimeout(() => location.reload(), 2000);
+    })
+    .catch(error => {
+        console.error('Error starting daemon:', error);
     });
 }
 
-function showLogs(service) {
-    var cmd = 'journalctl -u ' + service + ' -f --no-pager';
-    
-    // Open a modal or redirect to logs page
-    window.open('/plugins/dynamix.docker.manager/scripts/terminal?cmd=' + encodeURIComponent(cmd), '_blank');
-}
-
-function editConfig() {
-    window.open('/Config.php?view=plugins&name=<?php echo $plugin_name; ?>', '_blank');
+function stopDaemon() {
+    // Use UNRAID's exec API to stop the daemon
+    fetch('/plugins/dynamix.docker.manager/scripts/execute', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'cmd=killall linux-thermaltake-rgb'
+    })
+    .then(response => response.text())
+    .then(data => {
+        setTimeout(() => location.reload(), 2000);
+    })
+    .catch(error => {
+        console.error('Error stopping daemon:', error);
+    });
 }
 </script>
