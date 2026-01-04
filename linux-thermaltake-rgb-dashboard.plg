@@ -2,7 +2,7 @@
 <!ENTITY name "linux-thermaltake-rgb">
 <!ENTITY version "1.4.0">
 <!ENTITY launch "Config.php?view=plugins&amp;name=linux-thermaltake-rgb">
-<!ENTITY gitURL "https://raw.githubusercontent.com/chestm007/linux_thermaltake_riing/master">
+<!ENTITY gitURL "https://raw.githubusercontent.com/Alyxiana/unraid-ttriing/feature/unraid-dashboard-panel">
 <!ENTITY pluginURL "&gitURL;/&name;-&version;.plg">
 ]>
 
@@ -41,11 +41,6 @@ Supported devices:
 <OS min="6.9.0"/>
 <PLUGIN name="dynamix"/>
 </REQUIREMENTS>
-
-<FILE Name="&name;-&version;-txz" Run="yes">
-<URL>&gitURL;/&name;-&version;-txz</URL>
-<MD5>PLACEHOLDER_MD5</MD5>
-</FILE>
 
 <FILE Name="99-thermaltake-usb.rules">
 <URL>&gitURL;/unraid/99-thermaltake-usb.rules</URL>
@@ -89,8 +84,14 @@ mkdir -p /etc/linux_thermaltake_rgb
 # Install Python dependencies
 /usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 install pyyaml psutil pyusb numpy
 
-# Install the package
-/usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python pip3 install linux_thermaltake_rgb==&version;
+# Install the package from the current branch
+cd /tmp
+wget https://github.com/Alyxiana/unraid-ttriing/archive/feature/unraid-dashboard-panel.tar.gz
+tar -xzf feature-unraid-dashboard-panel.tar.gz
+cd linux_thermaltake_riing-feature-unraid-dashboard-panel
+/usr/local/emhttp/plugins/dynamix.docker.manager/scripts/python setup.py install
+cd /tmp
+rm -rf linux_thermaltake_riing-feature-unraid-dashboard-panel feature-unraid-dashboard-panel.tar.gz
 
 # Reload udev rules
 udevadm control --reload-rules
