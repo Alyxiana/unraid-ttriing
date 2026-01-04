@@ -1,7 +1,7 @@
 <!DOCTYPE PLUGIN [
     <!ENTITY name "unraid-ttriing">
     <!ENTITY author "Alyxiana">
-    <!ENTITY version "1.3.0">
+    <!ENTITY version "1.4.0">
     <!ENTITY pluginURL "https://github.com/Alyxiana/unraid-ttriing">
     <!ENTITY pluginDescription "Linux driver and daemon for Thermaltake Riing RGB fans and controllers (Original work by Max Chesterfield, forked and maintained by Alyxiana)">
 ]>
