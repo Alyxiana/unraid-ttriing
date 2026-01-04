@@ -1,0 +1,40 @@
+[Unit]
+Description=Thermaltake RGB Controller Daemon
+Documentation=https://github.com/chestm007/linux_thermaltake_riing
+AssertPathExists=/etc/linux_thermaltake_rgb/config.yml
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/linux-thermaltake-rgb
+ExecStart=/usr/local/bin/linux-thermaltake-rgb
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=5s
+User=root
+Group=root
+
+# Security settings - relaxed for UNRAID
+CapabilityBoundingSet=CAP_SYS_RAWIO
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=no
+DevicePolicy=closed
+DeviceAllow=char-usb_device rw
+DeviceAllow=char-hidraw rw
+ProtectSystem=strict
+ProtectHome=true
+ProtectControlGroups=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+RestrictAddressFamilies=AF_UNIX
+RestrictRealtime=yes
+RestrictNamespaces=yes
+MemoryDenyWriteExecute=yes
+LockPersonality=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service @raw-io
+
+[Install]
+WantedBy=multi-user.target

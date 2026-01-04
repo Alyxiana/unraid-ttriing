@@ -1,0 +1,93 @@
+#####################################################################
+#
+#  Configuration for 3 Thermaltake Controllers with 4 fans each
+#
+#####################################################################
+
+controllers:
+  # Controller 1 - First RGB controller
+  - unit: 1
+    type: g3                    # or riingtrio if you have Trio controllers
+    devices:
+      1: Riing Plus           # Port 1: Fan 1
+      2: Riing Plus           # Port 2: Fan 2
+      3: Riing Plus           # Port 3: Fan 3
+      4: Riing Plus           # Port 4: Fan 4
+      # Port 5 is unused on this controller
+
+  # Controller 2 - Second RGB controller  
+  - unit: 2
+    type: g3                    # or riingtrio if you have Trio controllers
+    devices:
+      1: Riing Plus           # Port 1: Fan 5
+      2: Riing Plus           # Port 2: Fan 6
+      3: Riing Plus           # Port 3: Fan 7
+      4: Riing Plus           # Port 4: Fan 8
+      # Port 5 is unused on this controller
+
+  # Controller 3 - Third RGB controller
+  - unit: 3
+    type: g3                    # or riingtrio if you have Trio controllers
+    devices:
+      1: Riing Plus           # Port 1: Fan 9
+      2: Riing Plus           # Port 2: Fan 10
+      3: Riing Plus           # Port 3: Fan 11
+      4: Riing Plus           # Port 4: Fan 12
+      # Port 5 is unused on this controller
+
+# Fan Control Configuration
+# Choose ONE of the following fan_manager configurations:
+
+# Option 1: Fixed speed for all fans (simple)
+fan_manager:
+  model: locked_speed
+  speed: 50                    # 0-100% speed for all 12 fans
+
+# Option 2: Temperature-based control (recommended)
+# fan_manager:
+#   model: temp_target
+#   target: 45                 # Target temperature in Celsius for motherboard
+#   sensor_name: nvme-pci-0100  # MB Temp sensor
+#   multiplier: 5               # How aggressively to adjust speeds
+
+# Option 3: Custom fan curve
+# fan_manager:
+#   model: curve
+#   points:
+#     - [0, 0]      # 0°C = 0% speed
+#     - [40, 25]    # 40°C = 25% speed
+#     - [50, 50]    # 50°C = 50% speed  
+#     - [65, 100]   # 65°C = 100% speed
+#   sensor_name: nvme-pci-0100  # MB Temp sensor
+
+# RGB Lighting Configuration
+# Choose ONE of the following lighting_manager configurations:
+
+# Option 1: Static color for all fans
+lighting_manager:
+  model: full
+  r: 0                         # Red (0-255)
+  g: 255                       # Green (0-255) 
+  b: 100                       # Blue (0-255)
+
+# Option 2: Temperature-based lighting (changes color with temp)
+# lighting_manager:
+#   model: temperature
+#   sensor_name: nvme-pci-0100  # MB Temp sensor
+#   cold: 40                    # Blue at 40°C
+#   target: 50                  # Green at 50°C
+#   hot: 65                     # Red at 65°C
+#   speed: normal               # Animation speed
+
+# Option 3: Flow effect (RGB spectrum cycling)
+# lighting_manager:
+#   model: flow
+#   speed: normal               # slow, normal, fast, extreme
+
+# Option 4: Pulse effect
+# lighting_manager:
+#   model: pulse
+#   r: 255
+#   g: 0
+#   b: 0
+#   speed: normal

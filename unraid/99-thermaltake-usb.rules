@@ -1,0 +1,16 @@
+# Thermaltake RGB Controller USB Device Access Rules
+# These rules allow the linux-thermaltake-rgb daemon to access USB devices
+
+# Thermaltake G3 Controller
+SUBSYSTEM=="usb", ATTR{idVendor}=="264d", ATTR{idProduct}=="0fa7", MODE="0660", GROUP="users", TAG+="uaccess"
+
+# Thermaltake Riing Trio Controller
+SUBSYSTEM=="usb", ATTR{idVendor}=="264d", ATTR{idProduct}=="0fa8", MODE="0660", GROUP="users", TAG+="uaccess"
+
+# Additional Thermaltake RGB controllers
+SUBSYSTEM=="usb", ATTR{idVendor}=="264d", MODE="0660", GROUP="users", TAG+="uaccess"
+
+# Allow HID access for RGB control
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="264d", MODE="0660", GROUP="users", TAG+="uaccess"
+
+# Reload rules after adding with: udevadm control --reload-rules

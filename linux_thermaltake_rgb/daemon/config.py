@@ -27,6 +27,7 @@ from linux_thermaltake_rgb import LOGGER
 class Config:
     abs_config_dir = '/etc/linux_thermaltake_rgb'
     rel_config_dir = 'linux_thermaltake_rgb/assets'
+    unraid_config_dir = '/boot/config/plugins/linux-thermaltake-rgb/config'
     config_file_name = 'config.yml'
 
     def __init__(self):
@@ -34,15 +35,28 @@ class Config:
         self.fan_manager = None
         self.lighting_manager = None
 
-        # if we have config in /etc, use it, otherwise try and use repository config file
-        if os.path.isdir(self.abs_config_dir):
+        # Check for environment variable override first
+        env_config = os.environ.get('THERMALTAKE_CONFIG_DIR')
+        if env_config and os.path.isfile(os.path.join(env_config, self.config_file_name)):
+            self.config_dir = env_config
+            LOGGER.info('Using config from environment variable: %s', env_config)
+        # Check UNRAID flash storage
+        elif os.path.isdir(self.unraid_config_dir):
+            if os.path.isfile(os.path.join(self.unraid_config_dir, self.config_file_name)):
+                self.config_dir = self.unraid_config_dir
+                LOGGER.info('Using UNRAID flash storage config: %s', self.unraid_config_dir)
+        # if we have config in /etc, use it
+        elif os.path.isdir(self.abs_config_dir):
             if os.path.isfile(os.path.join(self.abs_config_dir, self.config_file_name)):
                 self.config_dir = self.abs_config_dir
+                LOGGER.info('Using system config: %s', self.abs_config_dir)
+        # otherwise try and use repository config file
         elif os.path.isdir(self.rel_config_dir):
             if os.path.isfile(os.path.join(self.rel_config_dir, self.config_file_name)):
                 self.config_dir = self.rel_config_dir
+                LOGGER.info('Using repository config: %s', self.rel_config_dir)
         else:
-            raise Exception('no config file found')
+            raise Exception('no config file found in any location')
 
         config = self.load_config()
         self.parse_config(config)

@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  thermaltake-rgb:
+    build: .
+    container_name: thermaltake-rgb
+    restart: unless-stopped
+    privileged: true  # Required for USB device access
+    network_mode: host  # Required for temperature sensor access
+    volumes:
+      - ./config:/config:ro  # Mount configuration directory
+      - /run/udev:/run/udev:ro  # For udev information
+    devices:
+      - /dev/bus/usb:/dev/bus/usb  # Pass through USB devices
+    environment:
+      - DEBUG=false
+      - THERMALTAKE_CONFIG_DIR=/config
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

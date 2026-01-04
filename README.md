@@ -20,6 +20,10 @@ If your's isn't listed, please create an issue and I'll implement it ASAP!!
 
 ## Installation
 
+### UNRAID
+
+See [UNRAID-README.md](UNRAID-README.md) for detailed UNRAID installation instructions.
+
 ### Pypi
 
 `sudo pip3 install linux_thermaltake_rgb`  
